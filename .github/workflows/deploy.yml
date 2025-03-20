@@ -28,9 +28,16 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: pulumi login
 
+      - name: Retrieve AWS IAM Role ARN from Pulumi
+        run: |
+          echo "Retrieving AWS_ROLE_ARN from Pulumi environment..."
+          AWS_ROLE_ARN=$(pulumi env open amanjoshi1591/devops-lab8/aws)
+          echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_EN
+
       - name: Install Pulumi Dependencies
         run: |
           pip install pulumi pulumi-aws
+
       - name: Deploy with Pulumi
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
