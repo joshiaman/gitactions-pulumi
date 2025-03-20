@@ -24,8 +24,12 @@ jobs:
       - name: Retrieve AWS IAM Role ARN from Pulumi
         run: |
           echo "Retrieving AWS_ROLE_ARN from Pulumi environment..."
-          AWS_ROLE_ARN=$(pulumi env open amanjoshi1591/devops-lab8/aws awsArn)
+          AWS_ROLE_ARN=$(pulumi env open amanjoshi1591/devops-lab8/aws awsArn | tr -d '"')
           echo "PULUMI_AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
+      
+      - name: Debug IAM Role ARN
+        run: |
+          echo "IAM Role ARN Retrieved: ${{ env.PULUMI_AWS_ROLE_ARN }}"
       
       - name: Debug GitHub Environment Variables
         run: |
