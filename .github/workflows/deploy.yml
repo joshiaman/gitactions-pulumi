@@ -16,11 +16,10 @@ jobs:
       - name: Install ESC CLI
         uses: pulumi/esc-action@v1
 
-      - name: Authenticate with Pulumi Cloud
-        uses: pulumi/auth-actions@v1
-        with:
-          organization: pulumi
-          requested-token-type: urn:pulumi:token-type:access_token:organization
+      - name: Authenticate Pulumi
+        run: pulumi login --cloud-url "https://app.pulumi.com"
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       - name: Export GitHub Secrets to ESC
         run: |
@@ -41,17 +40,19 @@ jobs:
       - name: Install ESC CLI
         uses: pulumi/esc-action@v1
 
-      - name: Authenticate with Pulumi Cloud
-        uses: pulumi/auth-actions@v1
-        with:
-          organization: pulumi
-          requested-token-type: urn:pulumi:token-type:access_token:organization
+      - name: Authenticate Pulumi
+        run: pulumi login --cloud-url "https://app.pulumi.com"
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
       - name: Retrieve AWS IAM Role ARN from ESC
         run: |
           echo "Retrieving AWS_ROLE_ARN from ESC..."
           AWS_ROLE_ARN=$(esc env get $ESC_ENVIRONMENT environmentVariables.AWS_ROLE_ARN --json | jq -r '.')
           echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
+
+      - name: Debug IAM Role ARN
+        run: echo "IAM Role ARN Retrieved: ${{ env.AWS_ROLE_ARN }}"
 
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
