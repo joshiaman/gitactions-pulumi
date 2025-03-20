@@ -31,7 +31,7 @@ jobs:
       - name: Retrieve AWS IAM Role ARN from Pulumi
         run: |
           echo "Retrieving AWS_ROLE_ARN from Pulumi environment..."
-          AWS_ROLE_ARN=$(pulumi env open amanjoshi1591/devops-lab8/aws)
+          AWS_ROLE_ARN=$(pulumi env open amanjoshi1591/devops-lab8/aws | jq -r '.awsArn')
           echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
 
       - name: Install Pulumi Dependencies
