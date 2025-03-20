@@ -1,0 +1,5 @@
+config:
+  aws:region: ca-central-1
+  devops-lab8:errorDocument: error.html
+  devops-lab8:indexDocument: index.html
+  devops-lab8:path: ./www
