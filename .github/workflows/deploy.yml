@@ -21,18 +21,8 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: pulumi login
 
-      - name: Select Pulumi Stack
-        run: pulumi stack select dev  # ✅ Ensure correct stack is selected
-
-      - name: Retrieve AWS IAM Role ARN from Pulumi Config
-        run: |
-          echo "Retrieving AWS_ROLE_ARN from Pulumi config..."
-          AWS_ROLE_ARN=$(pulumi config get aws:roleArn)
-          echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
-
-      - name: Debug IAM Role ARN
-        run: |
-          echo "IAM Role ARN Retrieved: ${{ env.AWS_ROLE_ARN }}"
+      - name: Retrieve AWS IAM Role ARN from GitHub Secrets
+        run: echo "AWS_ROLE_ARN=${{ secrets.AWS_ROLE_ARN }}" >> $GITHUB_ENV
 
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2

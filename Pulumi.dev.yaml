@@ -3,5 +3,3 @@ config:
   devops-lab8:errorDocument: error.html
   devops-lab8:indexDocument: index.html
   devops-lab8:path: ./www
-  aws:roleArn:
-    secure: AAABAFXNfN5I2wJUsZ5L1cpfinL+XC5Nkp4fK7b+IT3Mnik1R0vOGVaWhK2dT9Mx32htb/OwhBh95U2IZzmvkbriQ20QHDVzw19SsRKP
