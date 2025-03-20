@@ -24,7 +24,7 @@ jobs:
       - name: Read AWS OIDC Role ARN from Pulumi Environment
         id: pulumi_env
         run: |
-          ROLE_ARN=$(pulumi env get devops-lab8-pulumi/aws roleArn | jq -r '.')
+          ROLE_ARN=$(pulumi env get devops-lab8-pulumi/aws roleArn)
           echo "ROLE_ARN=$ROLE_ARN" >> $GITHUB_ENV
 
       - name: Configure AWS OIDC Credentials
