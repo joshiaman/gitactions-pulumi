@@ -1,4 +1,4 @@
-name: Export GitHub Secrets to ESC and Deploy
+name: Deploy Static Website
 
 on:
   push:
@@ -10,46 +10,26 @@ permissions:
   contents: read
 
 jobs:
-  export-secrets:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install ESC CLI
-        uses: pulumi/esc-action@v1
-
-      - name: Authenticate Pulumi
-        run: pulumi login --cloud-url "https://app.pulumi.com"
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-
-      - name: Export GitHub Secrets to ESC
-        run: |
-          esc env get $ESC_ENVIRONMENT || esc env init $ESC_ENVIRONMENT
-          echo "$GITHUB_SECRETS" | python3 -c 'import sys, yaml, json; j=json.loads(sys.stdin.read()); print(yaml.safe_dump({"values": {"environmentVariables": {name: {"fn::secret": value} for (name, value) in j.items() if name != "github_token"}}}))' | esc env edit $ESC_ENVIRONMENT -f -
-        shell: bash
-        env:
-          ESC_ENVIRONMENT:  amanjoshi1591/devops-lab8/aws
-          GITHUB_SECRETS: ${{ toJSON(secrets) }}
-
   deploy:
     runs-on: ubuntu-latest
-    needs: export-secrets
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Install ESC CLI
-        uses: pulumi/esc-action@v1
-
-      - name: Authenticate Pulumi
-        run: pulumi login --cloud-url "https://app.pulumi.com"
+      - name: Set up Pulumi
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-
-      - name: Retrieve AWS IAM Role ARN from ESC
+          PULUMI_BACKEND_URL: "https://app.pulumi.com"
         run: |
-          echo "Retrieving AWS_ROLE_ARN from ESC..."
-          AWS_ROLE_ARN=$(esc env get $ESC_ENVIRONMENT environmentVariables.AWS_ROLE_ARN --json | jq -r '.')
+          pulumi logout || true
+          pulumi login --cloud-url $PULUMI_BACKEND_URL
+
+      - name: Retrieve AWS IAM Role ARN from Pulumi
+        run: |
+          echo "Retrieving AWS_ROLE_ARN from Pulumi environment..."
+          AWS_ROLE_ARN=$(pulumi env open amanjoshi1591/devops-lab8/aws | jq -r '.awsArn')
           echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
+
 
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -67,4 +47,5 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           AWS_REGION: us-east-1
         run: |
+          pulumi stack select dev
           pulumi up --yes
