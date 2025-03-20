@@ -27,15 +27,6 @@ jobs:
           AWS_ROLE_ARN=$(pulumi env open amanjoshi1591/devops-lab8/aws awsArn | tr -d '"')
           echo "PULUMI_AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
       
-      - name: Debug IAM Role ARN
-        run: |
-          echo "IAM Role ARN Retrieved: ${{ env.PULUMI_AWS_ROLE_ARN }}"
-      
-      - name: Debug GitHub Environment Variables
-        run: |
-          echo "PULUMI_AWS_ROLE_ARN = $PULUMI_AWS_ROLE_ARN"
-          printenv | sort
-      
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -48,10 +39,10 @@ jobs:
         run: |
           pip install pulumi pulumi-aws
 
-      # - name: Deploy with Pulumi
-      #   env:
-      #     PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      #     AWS_REGION: us-east-1
-      #   run: |
-      #     pulumi stack select dev
-      #     pulumi up --yes
+      - name: Deploy with Pulumi
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          AWS_REGION: us-east-1
+        run: |
+          pulumi stack select dev
+          pulumi up --yes
