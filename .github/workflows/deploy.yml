@@ -28,7 +28,7 @@ jobs:
           echo "$GITHUB_SECRETS" | python3 -c 'import sys, yaml, json; j=json.loads(sys.stdin.read()); print(yaml.safe_dump({"values": {"environmentVariables": {name: {"fn::secret": value} for (name, value) in j.items() if name != "github_token"}}}))' | esc env edit $ESC_ENVIRONMENT -f -
         shell: bash
         env:
-          ESC_ENVIRONMENT: myorg/myproject/myenvironment
+          ESC_ENVIRONMENT:  amanjoshi1591/devops-lab8/aws
           GITHUB_SECRETS: ${{ toJSON(secrets) }}
 
   deploy:
