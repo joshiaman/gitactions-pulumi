@@ -32,7 +32,7 @@ jobs:
         run: |
           echo "Retrieving AWS_ROLE_ARN from Pulumi environment..."
           AWS_ROLE_ARN=$(pulumi env open amanjoshi1591/devops-lab8/aws)
-          echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_EN
+          echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
 
       - name: Install Pulumi Dependencies
         run: |
