@@ -24,7 +24,7 @@ jobs:
       - name: Retrieve AWS IAM Role ARN from Pulumi Config
         run: |
           echo "Retrieving AWS_ROLE_ARN from Pulumi config..."
-          AWS_ROLE_ARN=$(pulumi config get aws:roleArn --show-secrets)
+          AWS_ROLE_ARN=$(pulumi config get aws:roleArn)
           echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
 
       - name: Debug IAM Role ARN
