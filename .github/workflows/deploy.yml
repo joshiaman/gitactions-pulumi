@@ -16,32 +16,21 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Set up Pulumi
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          PULUMI_BACKEND_URL: "https://app.pulumi.com"
-        run: |
-          pulumi logout || true
-          pulumi login --cloud-url $PULUMI_BACKEND_URL
-
-      - name: Retrieve AWS IAM Role ARN from Pulumi
-        run: |
-          echo "Retrieving AWS_ROLE_ARN from Pulumi environment..."
-          AWS_ROLE_ARN=$(pulumi env open amanjoshi1591/devops-lab8/aws | jq -r '.awsArn')
-          echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
-
-
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: GitHubActionsSession
           aws-region: us-east-1
+
+      - name: Set up Pulumi
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        run: pulumi login
 
       - name: Install Pulumi Dependencies
         run: |
           pip install pulumi pulumi-aws
-
       - name: Deploy with Pulumi
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
