@@ -51,9 +51,6 @@ jobs:
           AWS_ROLE_ARN=$(esc env get $ESC_ENVIRONMENT environmentVariables.AWS_ROLE_ARN --json | jq -r '.')
           echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
 
-      - name: Debug IAM Role ARN
-        run: echo "IAM Role ARN Retrieved: ${{ env.AWS_ROLE_ARN }}"
-
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
