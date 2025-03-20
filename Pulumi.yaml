@@ -1,6 +1,7 @@
 name: devops-lab8
 description: A Pulumi YAML program to deploy a static website on AWS
 runtime: yaml
+
 # Import the program's configuration settings.
 config:
   path:
@@ -15,33 +16,39 @@ config:
   pulumi:tags:
     value:
       pulumi:template: static-website-aws-yaml
+
 resources:
   # Create an S3 bucket and configure it as a website.
   bucket:
     type: aws:s3:BucketV2
+
   bucketWebsite:
-    properties:
-      bucket: ${bucket.bucket}
-      errorDocument:
-        suffix: ${errorDocument}
-      indexDocument:
-        key: ${indexDocument}
     type: aws:s3:BucketWebsiteConfigurationV2
+    properties:
+      bucket: ${bucket.id}
+      errorDocument:
+        key: ${errorDocument}  # ✅ Fixed (Uses 'key' instead of 'suffix')
+      indexDocument:
+        suffix: ${indexDocument}  # ✅ Fixed (Uses 'suffix' instead of 'key')
+
   # Assign ownership controls to the new S3 bucket
   ownership-controls:
+    type: aws:s3:BucketOwnershipControls
     properties:
       bucket: ${bucket.id}
       rule:
         objectOwnership: ObjectWriter
-    type: aws:s3:BucketOwnershipControls
+
   # Configure the public access block for the new S3 bucket
   public-access-block:
+    type: aws:s3:BucketPublicAccessBlock
     properties:
       bucket: ${bucket.id}
       blockPublicAcls: false
-    type: aws:s3:BucketPublicAccessBlock
-  # Use a synced folder to manage the files of the website.
+
+  # Upload website files to S3
   bucket-folder:
+    type: synced-folder:index:S3BucketFolder
     options:
       dependsOn:
         - ${ownership-controls}
@@ -50,7 +57,7 @@ resources:
       acl: public-read
       bucketName: ${bucket.bucket}
       path: ${path}
-    type: synced-folder:index:S3BucketFolder
+
   # Create a CloudFront CDN to distribute and cache the website.
   cdn:
     type: aws:cloudfront:Distribution
@@ -94,6 +101,7 @@ resources:
           restrictionType: none
       viewerCertificate:
         cloudfrontDefaultCertificate: true
+
 # Export the URLs and hostnames of the bucket and distribution.
 outputs:
   originURL: http://${bucketWebsite.websiteEndpoint}
