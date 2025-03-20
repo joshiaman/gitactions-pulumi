@@ -23,11 +23,13 @@ jobs:
 
       - name: Retrieve AWS IAM Role ARN from Pulumi Config
         run: |
-          echo "AWS_ROLE_ARN=$(pulumi config get aws:roleArn)" >> $GITHUB_ENV
+          echo "Retrieving AWS_ROLE_ARN from Pulumi config..."
+          AWS_ROLE_ARN=$(pulumi config get aws:roleArn --show-secrets)
+          echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
 
       - name: Debug IAM Role ARN
         run: |
-          echo "Using IAM Role ARN: ${{ env.AWS_ROLE_ARN }}"
+          echo "IAM Role ARN Retrieved: ${{ env.AWS_ROLE_ARN }}"
 
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
