@@ -39,7 +39,7 @@ jobs:
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-            role-to-assume: ${{ env.AWS_ROLE_ARN }}
+            role-to-assume: ${{ env.PULUMI_AWS_ROLE_ARN }}
             role-session-name: GitHubActionsSession
             aws-region: us-east-1
             
