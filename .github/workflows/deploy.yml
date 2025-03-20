@@ -16,13 +16,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Configure AWS OIDC Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          role-session-name: GitHubActionsSession
-          aws-region: us-east-1
-
       - name: Set up Pulumi
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -38,6 +31,13 @@ jobs:
         run: |
           echo "PULUMI_AWS_ROLE_ARN = $PULUMI_AWS_ROLE_ARN"
           printenv | sort
+      
+      - name: Configure AWS OIDC Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+            role-to-assume: ${{ env.AWS_ROLE_ARN }}
+            role-session-name: GitHubActionsSession
+            aws-region: us-east-1
             
 
       - name: Install Pulumi Dependencies
