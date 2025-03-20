@@ -2,5 +2,8 @@ config:
   aws:region: ca-central-1
   devops-lab8:errorDocument: error.html
   devops-lab8:indexDocument: index.html
+<<<<<<< HEAD
   aws:roleArn: arn:aws:iam::727646477053:role/github-aws-role
+=======
+>>>>>>> 97acf3b2f67669633b46c185bb428f673474777f
   devops-lab8:path: ./www
