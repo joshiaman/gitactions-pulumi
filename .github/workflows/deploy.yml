@@ -24,9 +24,6 @@ jobs:
       - name: Set AWS OIDC Role ARN from GitHub Secrets
         run: echo "ROLE_ARN=${{ secrets.AWS_ROLE_ARN }}" >> $GITHUB_ENV
 
-      - name: Debug Role ARN
-        run: echo "Using AWS Role ARN: $ROLE_ARN"
-
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
