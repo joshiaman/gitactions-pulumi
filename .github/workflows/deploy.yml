@@ -19,7 +19,7 @@ jobs:
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
           role-session-name: GitHubActionsSession
           aws-region: us-east-1
 
@@ -39,3 +39,5 @@ jobs:
         run: |
           pulumi stack select dev
           pulumi up --yes
+
+      - name: Destroy 
