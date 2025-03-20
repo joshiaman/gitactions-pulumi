@@ -3,7 +3,7 @@ name: Deploy Static Website
 on:
   push:
     branches:
-      - master
+      - main
 
 permissions:
   id-token: write
@@ -16,17 +16,17 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Set up Pulumi
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-        run: pulumi login
-
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: GitHubActionsSession
           aws-region: us-east-1
+
+      - name: Set up Pulumi
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        run: pulumi login
 
       - name: Install Pulumi Dependencies
         run: |
