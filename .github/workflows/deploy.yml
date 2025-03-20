@@ -21,13 +21,10 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: pulumi login
 
-      - name: Set AWS OIDC Role ARN from GitHub Secrets
-        run: echo "ROLE_ARN=${{ secrets.AWS_ROLE_ARN }}" >> $GITHUB_ENV
-
       - name: Configure AWS OIDC Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ env.ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: GitHubActionsSession
           aws-region: us-east-1
 
@@ -38,6 +35,7 @@ jobs:
       - name: Deploy with Pulumi
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          AWS_REGION: us-east-1
         run: |
           pulumi stack select dev
           pulumi up --yes
